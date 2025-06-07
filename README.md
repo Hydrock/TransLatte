@@ -4,12 +4,13 @@
 
 An application for fast text translation wherever you are.
 
-
-## Usage
-
 The program is displayed on top of all windows, even in the full-screen mode of applications, which makes it an indispensable assistant in everyday work.
 
 Choice translate platform - translate it.
+
+## Usage
+
+For downloading see the Releases section on right sidebar.
 
 Program are saving choice when program is closing.
 Window size are saving too.
@@ -47,3 +48,8 @@ After installing deps, run command:
 npm run build
 ```
 
+## Support
+
+If you like this project, you can support it:
+
+![TransLatte Icon](assets/bmc_qr.png)
