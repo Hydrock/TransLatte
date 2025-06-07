@@ -42,8 +42,19 @@
     <script>
         const select = document.getElementById('provider');
         const frame = document.getElementById('frame');
+
+        // Восстановление при загрузке
+        const savedValue = localStorage.getItem('selectedProvider');
+        if (savedValue) {
+            select.value = savedValue;
+            frame.setAttribute("src", savedValue);
+        }
+
+        // Сохранение при выборе
         select.addEventListener('change', () => {
-            frame.setAttribute("src", select.value);
+            const value = select.value;
+            localStorage.setItem('selectedProvider', value);
+            frame.setAttribute("src", value);
         });
     </script>
 </body>
