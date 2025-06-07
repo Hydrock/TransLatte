@@ -21,8 +21,8 @@ function createClapWindow() {
         icon: path.join(__dirname, 'assets/icon.icns'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: false,
-            contextIsolation: true,
+            nodeIntegration: true,
+            contextIsolation: false,
             webviewTag: true // ✅ ОБЯЗАТЕЛЬНО!
         }
     })
@@ -34,6 +34,9 @@ function createClapWindow() {
     mainWindow.setAlwaysOnTop(true, "screen-saver")     // - 2 -
     mainWindow.setVisibleOnAllWorkspaces(true)          // - 3 -
     mainWindow.loadFile('public/reaction.html')
+
+    /* Включаем DevTools */
+    // mainWindow.webContents.openDevTools();
 
     return mainWindow;
 }

@@ -6,4 +6,5 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
     toggleWindow: () => ipcRenderer.send('toggle-window'),
     // Добавляй здесь любые методы, которые хочешь "прокинуть" в HTML
+
 });
