@@ -25,6 +25,11 @@
             height: calc(100% - 40px);
             border: none;
         }
+
+        #hotkey {
+            font-size: 0.8rem;
+            color: gainsboro;
+        }
     </style>
 </head>
 
@@ -35,6 +40,9 @@
             <option value="https://translate.google.com">Google Translate</option>
             <option value="https://www.deepl.com/translator">DeepL</option>
         </select>
+        <span id="hotkey">
+            &nbsp;Hide/Show: Cmd+Option+Shift+T
+        </span>
     </div>
     <webview id="frame" src="https://translate.yandex.com" style="width:100%; height:calc(100% - 40px);" allowpopups>
     </webview>

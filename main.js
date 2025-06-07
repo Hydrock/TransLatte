@@ -1,7 +1,10 @@
-const Store = require('electron-store').default;
-const store = new Store();
-const { app, BrowserWindow, globalShortcut } = require("electron");
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
 const path = require("path");
+const adapter = new FileSync(path.join(__dirname, 'settings.json'));
+const db = low(adapter);
+db.defaults({ width: 500, height: 600 }).write();
+const { app, BrowserWindow, globalShortcut } = require("electron");
 const is_mac = process.platform === 'darwin'
 
 if (is_mac) {
@@ -9,8 +12,8 @@ if (is_mac) {
 }
 
 function createClapWindow() {
-    const width = store.get('width', 500);
-    const height = store.get('height', 600);
+    const width = db.get('width').value();
+    const height = db.get('height').value();
     // Create the browser window.
     const mainWindow = new BrowserWindow({
         width,
@@ -25,8 +28,8 @@ function createClapWindow() {
     })
     mainWindow.on('resize', () => {
         const [width, height] = mainWindow.getSize();
-        store.set('width', width);
-        store.set('height', height);
+        db.set('width', width).write();
+        db.set('height', height).write();
     });
     mainWindow.setAlwaysOnTop(true, "screen-saver")     // - 2 -
     mainWindow.setVisibleOnAllWorkspaces(true)          // - 3 -
@@ -46,7 +49,6 @@ app.whenReady().then(() => {
             mainWindow.focus();
         }
     });
-    console.log("Shortcut registered?", success);
 })
 
 app.on('will-quit', () => {
