@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>TransLatte</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        #menu,
+        select {
+            background-color: black;
+            padding: 5px;
+            color: aliceblue;
+        }
+
+        #frame {
+            width: 100%;
+            height: calc(100% - 40px);
+            border: none;
+        }
+    </style>
+</head>
+
+<body style="height: 100vh;">
+    <div id="menu">
+        <select id="provider">
+            <option value="https://translate.yandex.com">Yandex Translate</option>
+            <option value="https://translate.google.com">Google Translate</option>
+            <option value="https://www.deepl.com/translator">DeepL</option>
+        </select>
+    </div>
+    <webview id="frame" src="https://translate.yandex.com" style="width:100%; height:calc(100% - 40px);" allowpopups>
+    </webview>
+
+    <script>
+        const select = document.getElementById('provider');
+        const frame = document.getElementById('frame');
+        select.addEventListener('change', () => {
+            frame.setAttribute("src", select.value);
+        });
+    </script>
+</body>
+
+</html>
