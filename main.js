@@ -1,10 +1,13 @@
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const path = require("path");
-const adapter = new FileSync(path.join(__dirname, 'settings.json'));
+const { app, BrowserWindow, globalShortcut } = require("electron");
+
+const dbPath = path.join(app.getPath('userData'), 'settings.json');
+const adapter = new FileSync(dbPath);
+
 const db = low(adapter);
 db.defaults({ width: 500, height: 600 }).write();
-const { app, BrowserWindow, globalShortcut } = require("electron");
 const is_mac = process.platform === 'darwin'
 
 if (is_mac) {
@@ -21,8 +24,8 @@ function createClapWindow() {
         icon: path.join(__dirname, 'assets/icon.icns'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true,
-            contextIsolation: false,
+            contextIsolation: true,
+            nodeIntegration: false,
             webviewTag: true // ✅ ОБЯЗАТЕЛЬНО!
         }
     })

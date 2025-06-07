@@ -165,110 +165,127 @@
         </div>
     </div>
     <script>
-        try {
-            const select = document.getElementById('provider');
-            const frame = document.getElementById('frame');
-
-            // Восстановление при загрузке
-            const savedValue = localStorage.getItem('selectedProvider');
-            if (savedValue) {
-                select.value = savedValue;
-                frame.setAttribute("src", savedValue);
-            }
-
-            // Сохранение при выборе
-            select.addEventListener('change', () => {
-                const value = select.value;
-                localStorage.setItem('selectedProvider', value);
-                frame.setAttribute("src", value);
-            });
-
-            const { ipcRenderer } = require('electron');
-            const low = require('lowdb');
-            const FileSync = require('lowdb/adapters/FileSync');
-            const adapter = new FileSync('settings.json');
-            const db = low(adapter);
-
-            // Инициализация базы, если пустая
-            db.defaults({ providers: [] }).write();
-            const current = db.get('providers').value();
-            if (current.length === 0) {
-                db.set('providers', [
-                    { name: 'Yandex Translate', url: 'https://translate.yandex.ru' },
-                    { name: 'Google Translate', url: 'https://translate.google.com' },
-                    { name: 'DeepL', url: 'https://www.deepl.com' }
-                ]).write();
-            }
-
-            const settingsBtn = document.getElementById('settings');
-            const settingsPanel = document.getElementById('settingsPanel');
-            const webview = document.getElementById('frame');
-            const menu = document.getElementById('menu');
-
-            const addForm = document.getElementById('addForm');
-            const newName = document.getElementById('newName');
-            const newUrl = document.getElementById('newUrl');
-            const urlList = document.getElementById('urlList');
-
-            function loadProviders() {
-                select.innerHTML = '';
-                const providers = db.get('providers').value();
-                for (const { name, url } of providers) {
-                    const option = document.createElement('option');
-                    option.value = url;
-                    option.textContent = name;
-                    select.appendChild(option);
+        function getProviders() {
+            try {
+                const stored = localStorage.getItem('providers');
+                if (!stored) {
+                    const defaults = [
+                        { name: 'Yandex Translate', url: 'https://translate.yandex.ru' },
+                        { name: 'Google Translate', url: 'https://translate.google.com' },
+                        { name: 'DeepL', url: 'https://www.deepl.com' }
+                    ];
+                    localStorage.setItem('providers', JSON.stringify(defaults));
+                    return defaults;
                 }
+                return JSON.parse(stored);
+            } catch {
+                return [];
             }
-            loadProviders();
-
-            function renderList() {
-                urlList.innerHTML = '';
-                const providers = db.get('providers').value();
-                providers.forEach((entry, index) => {
-                    const li = document.createElement('li');
-                    li.textContent = `${entry.name} (${entry.url})`;
-
-                    const delBtn = document.createElement('button');
-                    delBtn.textContent = '❌';
-                    delBtn.style.marginLeft = '10px';
-                    delBtn.onclick = () => {
-                        db.get('providers').splice(index, 1).write();
-                        loadProviders();
-                        renderList();
-                    };
-
-                    li.appendChild(delBtn);
-                    urlList.appendChild(li);
-                });
-            }
-
-            settingsBtn.addEventListener('click', () => {
-                const isVisible = settingsPanel.style.display === 'block';
-                settingsPanel.style.display = isVisible ? 'none' : 'block';
-                webview.style.visibility = isVisible ? 'visible' : 'hidden';
-                menu.style.display = 'flex';
-                if (!isVisible) {
-                    loadProviders();
-                    renderList();
-                }
-            });
-
-            addForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const name = newName.value.trim();
-                const url = newUrl.value.trim();
-                if (name && url) {
-                    db.get('providers').push({ name, url }).write();
-                    newName.value = '';
-                    newUrl.value = '';
-                    loadProviders();
-                    renderList();
-                }
-            });
-        } catch (error) {
-            console.log('Произошла непредвиденная ошибка:', error);
         }
+
+        function addProvider(name, url) {
+            const providers = getProviders();
+            providers.push({ name, url });
+            localStorage.setItem('providers', JSON.stringify(providers));
+        }
+
+        function deleteProvider(index) {
+            const providers = getProviders();
+            providers.splice(index, 1);
+            localStorage.setItem('providers', JSON.stringify(providers));
+        }
+
+        function getSavedProvider() {
+            return localStorage.getItem('selectedProvider');
+        }
+
+        function setSavedProvider(value) {
+            localStorage.setItem('selectedProvider', value);
+        }
+
+        const select = document.getElementById('provider');
+        const frame = document.getElementById('frame');
+
+        loadProviders();
+
+        const savedValue = getSavedProvider();
+        if (savedValue) {
+            select.value = savedValue;
+            frame.setAttribute("src", savedValue);
+        }
+
+        select.addEventListener('change', () => {
+            const value = select.value;
+            setSavedProvider(value);
+            frame.setAttribute("src", value);
+        });
+
+        const settingsBtn = document.getElementById('settings');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const webview = document.getElementById('frame');
+        const menu = document.getElementById('menu');
+
+        const addForm = document.getElementById('addForm');
+        const newName = document.getElementById('newName');
+        const newUrl = document.getElementById('newUrl');
+        const urlList = document.getElementById('urlList');
+
+        function loadProviders() {
+            select.innerHTML = '';
+            const providers = getProviders();
+            console.log('providers:', providers);
+            for (const { name, url } of providers) {
+                const option = document.createElement('option');
+                option.value = url;
+                option.textContent = name;
+                select.appendChild(option);
+            }
+        }
+
+        function renderList() {
+            urlList.innerHTML = '';
+            const providers = getProviders();
+            providers.forEach((entry, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${entry.name} (${entry.url})`;
+
+                const delBtn = document.createElement('button');
+                delBtn.textContent = '❌';
+                delBtn.style.marginLeft = '10px';
+                delBtn.onclick = () => {
+                    deleteProvider(index);
+                    loadProviders();
+                    renderList();
+                };
+
+                li.appendChild(delBtn);
+                urlList.appendChild(li);
+            });
+        }
+
+        settingsBtn.addEventListener('click', () => {
+            const isVisible = settingsPanel.style.display === 'block';
+            settingsPanel.style.display = isVisible ? 'none' : 'block';
+            webview.style.visibility = isVisible ? 'visible' : 'hidden';
+            menu.style.display = 'flex';
+            if (!isVisible) {
+                loadProviders();
+                renderList();
+            }
+        });
+
+        addForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = newName.value.trim();
+            const url = newUrl.value.trim();
+            if (name && url) {
+                addProvider(name, url);
+                newName.value = '';
+                newUrl.value = '';
+                loadProviders();
+                renderList();
+            }
+        });
     </script>
 </body>
 

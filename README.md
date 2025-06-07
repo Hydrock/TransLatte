@@ -48,6 +48,14 @@ After installing deps, run command:
 npm run build
 ```
 
+
+
+## Contributing
+
+If you find a bug or would like to request a feature, please [create an issue](https://github.com/hydrock/translatte/issues).
+
+If you would like to contribute to development, feel free to submit a pull request (PR). Contributions are welcome!
+
 ## Support
 
 If you like this project, you can support it:

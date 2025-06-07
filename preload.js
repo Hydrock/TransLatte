@@ -1,10 +1,23 @@
-// preload.js
-
 const { contextBridge, ipcRenderer } = require('electron');
-
-// Экспортируем функции в window.electronAPI
 contextBridge.exposeInMainWorld('electronAPI', {
-    toggleWindow: () => ipcRenderer.send('toggle-window'),
-    // Добавляй здесь любые методы, которые хочешь "прокинуть" в HTML
-
+    // getProviders: () => {
+    //     try {
+    //         return JSON.parse(localStorage.getItem('providers') || '[]');
+    //     } catch {
+    //         return [];
+    //     }
+    // },
+    // addProvider: (name, url) => {
+    //     const providers = JSON.parse(localStorage.getItem('providers') || '[]');
+    //     providers.push({ name, url });
+    //     localStorage.setItem('providers', JSON.stringify(providers));
+    // },
+    // deleteProvider: (index) => {
+    //     const providers = JSON.parse(localStorage.getItem('providers') || '[]');
+    //     providers.splice(index, 1);
+    //     localStorage.setItem('providers', JSON.stringify(providers));
+    // },
+    // getSavedProvider: () => localStorage.getItem('selectedProvider'),
+    // setSavedProvider: (value) => localStorage.setItem('selectedProvider', value),
+    ipcRenderer
 });
