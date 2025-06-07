@@ -1,6 +1,6 @@
 const Store = require('electron-store').default;
 const store = new Store();
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, globalShortcut } = require("electron");
 const path = require("path");
 const is_mac = process.platform === 'darwin'
 
@@ -31,7 +31,24 @@ function createClapWindow() {
     mainWindow.setAlwaysOnTop(true, "screen-saver")     // - 2 -
     mainWindow.setVisibleOnAllWorkspaces(true)          // - 3 -
     mainWindow.loadFile('public/reaction.html')
+
+    return mainWindow;
 }
 app.whenReady().then(() => {
-    createClapWindow()
+    const mainWindow = createClapWindow()
+
+    globalShortcut.register('Cmd+Option+Shift+T', () => {
+        if (!mainWindow) return;
+        if (mainWindow.isVisible()) {
+            mainWindow.hide();
+        } else {
+            mainWindow.show();
+            mainWindow.focus();
+        }
+    });
+    console.log("Shortcut registered?", success);
 })
+
+app.on('will-quit', () => {
+    globalShortcut.unregisterAll();
+});
