@@ -1,6 +1,6 @@
 {
   "name": "translatte",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An application for fast text translation wherever you are",
   "main": "main.js",
   "scripts": {
