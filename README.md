@@ -1,4 +1,4 @@
-![TransLatte Icon](assets/icon.png)
+<img src="assets/icon.png" alt="TransLatte Icon" width="300"/>
 
 # TransLatte
 
@@ -52,4 +52,4 @@ npm run build
 
 If you like this project, you can support it:
 
-![TransLatte Icon](assets/bmc_qr.png)
+<img src="assets/bmc_qr.png" alt="TransLatte Icon" width="240"/>
