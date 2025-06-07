@@ -8,8 +8,6 @@ if (is_mac) {
     app.dock.hide()                                     // - 1 - 
 }
 
-const MAIN_WINDOWS_WIDTH = 500;
-const MAIN_WINDOWS_HEIGHT = 600;
 function createClapWindow() {
     const width = store.get('width', 500);
     const height = store.get('height', 600);
@@ -17,6 +15,7 @@ function createClapWindow() {
     const mainWindow = new BrowserWindow({
         width,
         height,
+        icon: path.join(__dirname, 'assets/icon.icns'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
