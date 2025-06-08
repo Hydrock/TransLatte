@@ -2,6 +2,14 @@
     "name": "translatte",
     "version": "1.0.1",
     "description": "An application for fast text translation wherever you are",
+    "author": {
+        "name": "Hydrock",
+        "email": "hydrock74@gmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Hydrock/TransLatte"
+    },
     "main": "main.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,7 +24,6 @@
         "build:all": "electron-builder --mac --win --linux"
     },
     "keywords": [],
-    "author": "",
     "license": "ISC",
     "devDependencies": {
         "electron": "^27.3.11",
