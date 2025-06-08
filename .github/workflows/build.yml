@@ -12,6 +12,8 @@ jobs:
             matrix:
                 os: [ubuntu-latest, windows-latest, macos-latest]
         runs-on: ${{ matrix.os }}
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         steps:
             - name: Checkout repository
@@ -26,20 +28,28 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            - name: Generate release notes
+              run: |
+                  echo "## Changelog" > release-notes.md
+                  git fetch --tags
+                  LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+                  echo "Last tag: $LATEST_TAG"
+                  git log $LATEST_TAG..HEAD --pretty=format:"- %s" >> release-notes.md
+
             - name: Build for macOS x64 and arm64
               if: runner.os == 'macOS'
               run: |
-                  npx electron-builder --mac --x64 --arm64 --publish never
+                  npx electron-builder --mac --x64 --arm64 --publish always --release-notes=release-notes.md
 
             - name: Build for Windows x64 and arm64
               if: runner.os == 'Windows'
               run: |
-                  npx electron-builder --win --x64 --arm64 --publish never
+                  npx electron-builder --win --x64 --arm64 --publish always --release-notes=release-notes.md
 
             - name: Build for Linux x64 and arm64
               if: runner.os == 'Linux'
               run: |
-                  npx electron-builder --linux --x64 --arm64 --publish never
+                  npx electron-builder --linux --x64 --arm64 --publish always --release-notes=release-notes.md
 
             - name: Upload Artifacts
               uses: actions/upload-artifact@v4
