@@ -26,9 +26,20 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            - name: Build Electron App
+            - name: Build for macOS x64 and arm64
+              if: runner.os == 'macOS'
               run: |
-                  npx electron-builder --publish never
+                  npx electron-builder --mac --x64 --arm64 --publish never
+
+            - name: Build for Windows x64 and arm64
+              if: runner.os == 'Windows'
+              run: |
+                  npx electron-builder --win --x64 --arm64 --publish never
+
+            - name: Build for Linux x64 and arm64
+              if: runner.os == 'Linux'
+              run: |
+                  npx electron-builder --linux --x64 --arm64 --publish never
 
             - name: Upload Artifacts
               uses: actions/upload-artifact@v4
