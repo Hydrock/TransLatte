@@ -1,22 +1,35 @@
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
+const fs = require('fs');
 const path = require("path");
 const { app, BrowserWindow, globalShortcut } = require("electron");
 
-const dbPath = path.join(app.getPath('userData'), 'settings.json');
-const adapter = new FileSync(dbPath);
+const settingsPath = path.join(app.getPath('userData'), 'settings.json');
+const defaultSettings = { width: 500, height: 600 };
 
-const db = low(adapter);
-db.defaults({ width: 500, height: 600 }).write();
+function loadSettings() {
+    try {
+        const data = fs.readFileSync(settingsPath, 'utf-8');
+        return JSON.parse(data);
+    } catch (err) {
+        return defaultSettings;
+    }
+}
+
+function saveSettings(settings) {
+    try {
+        fs.writeFileSync(settingsPath, JSON.stringify(settings));
+    } catch (err) {
+        console.error("Ошибка при сохранении настроек:", err);
+    }
+}
+
 const is_mac = process.platform === 'darwin'
 
 if (is_mac) {
-    app.dock.hide()                                     // - 1 - 
+    app.dock.hide();
 }
 
 function createClapWindow() {
-    const width = db.get('width').value();
-    const height = db.get('height').value();
+    const { width, height } = loadSettings();
     // Create the browser window.
     const mainWindow = new BrowserWindow({
         width,
@@ -31,12 +44,11 @@ function createClapWindow() {
     })
     mainWindow.on('resize', () => {
         const [width, height] = mainWindow.getSize();
-        db.set('width', width).write();
-        db.set('height', height).write();
+        saveSettings({ width, height });
     });
-    mainWindow.setAlwaysOnTop(true, "screen-saver")     // - 2 -
-    mainWindow.setVisibleOnAllWorkspaces(true)          // - 3 -
-    mainWindow.loadFile('public/reaction.html')
+    mainWindow.setAlwaysOnTop(true, "screen-saver");
+    mainWindow.setVisibleOnAllWorkspaces(true);
+    mainWindow.loadFile('public/reaction.html');
 
     /* Включаем DevTools */
     // mainWindow.webContents.openDevTools();
