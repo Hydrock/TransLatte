@@ -21,7 +21,7 @@
         "build:win": "electron-builder --win",
         "build:mac": "electron-builder --mac",
         "build:linux": "electron-builder --linux",
-        "build:all": "electron-builder --mac --win --linux"
+        "build:all": "electron-builder --mac --win --linux --arm64 --x64"
     },
     "keywords": [],
     "license": "ISC",
