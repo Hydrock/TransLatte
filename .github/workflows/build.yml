@@ -1,0 +1,37 @@
+name: Build Electron App
+
+on:
+    push:
+        tags:
+            - "v*" # запускается при пуше тега версии
+    workflow_dispatch:
+
+jobs:
+    build:
+        strategy:
+            matrix:
+                os: [ubuntu-latest, windows-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build Electron App
+              run: |
+                  npx electron-builder --publish never
+
+            - name: Upload Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: ${{ runner.os }}-artifacts
+                  path: dist/
