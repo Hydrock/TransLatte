@@ -145,9 +145,7 @@
 <body>
     <div id="menu">
         <select id="provider"></select>
-        <span id="hotkey">
-            &nbsp;Hide/Show: Cmd+Option+Shift+T
-        </span>
+        &nbsp;<span id="hotkey"></span>
         <button id="settings">
             ⚙︎
         </button>
@@ -165,6 +163,13 @@
         </div>
     </div>
     <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const hotkeyDisplay = document.getElementById('hotkey');
+            if (hotkeyDisplay && window.appHotkeys) {
+                hotkeyDisplay.innerText = window.appHotkeys.toggleShortcut;
+            }
+        });
+
         function getProviders() {
             try {
                 const stored = localStorage.getItem('providers');

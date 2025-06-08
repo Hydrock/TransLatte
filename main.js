@@ -4,6 +4,7 @@ const { app, BrowserWindow, globalShortcut } = require("electron");
 
 const settingsPath = path.join(app.getPath('userData'), 'settings.json');
 const defaultSettings = { width: 500, height: 600 };
+const toggleShortcut = process.platform === 'darwin' ? 'Cmd+Option+Shift+T' : 'Ctrl+Alt+Shift+T'
 
 function loadSettings() {
     try {
@@ -58,7 +59,7 @@ function createClapWindow() {
 app.whenReady().then(() => {
     const mainWindow = createClapWindow()
 
-    globalShortcut.register('Cmd+Option+Shift+T', () => {
+    globalShortcut.register(toggleShortcut, () => {
         if (!mainWindow) return;
         if (mainWindow.isVisible()) {
             mainWindow.hide();
