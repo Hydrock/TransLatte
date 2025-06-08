@@ -31,7 +31,7 @@ jobs:
             - name: Generate release notes
               run: |
                   echo "## Changelog" > release-notes.md
-                  git fetch --tags
+                  git fetch --tags --force
                   LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
                   echo "Last tag: $LATEST_TAG"
                   git log $LATEST_TAG..HEAD --pretty=format:"- %s" >> release-notes.md
