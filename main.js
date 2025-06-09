@@ -1,10 +1,13 @@
 const fs = require('fs');
 const path = require("path");
-const { app, BrowserWindow, globalShortcut } = require("electron");
+const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
+
+const defaultShortcut = process.platform === 'darwin' ? 'Cmd+Option+Shift+T' : 'Ctrl+Alt+Shift+T';
+const defaultSettings = { width: 500, height: 600, shortcut: defaultShortcut };
 
 const settingsPath = path.join(app.getPath('userData'), 'settings.json');
-const defaultSettings = { width: 500, height: 600 };
-const toggleShortcut = process.platform === 'darwin' ? 'Cmd+Option+Shift+T' : 'Ctrl+Alt+Shift+T'
+// You can specify your own shortcut in settings.json by adding a "shortcut" field, e.g.:
+// { "width": 500, "height": 600, "shortcut": "Ctrl+Alt+Shift+T" }
 
 function loadSettings() {
     try {
@@ -45,21 +48,24 @@ function createClapWindow() {
     })
     mainWindow.on('resize', () => {
         const [width, height] = mainWindow.getSize();
-        saveSettings({ width, height });
+        const currentSettings = loadSettings();
+        saveSettings({ ...currentSettings, width, height });
     });
     mainWindow.setAlwaysOnTop(true, "screen-saver");
     mainWindow.setVisibleOnAllWorkspaces(true);
     mainWindow.loadFile('public/reaction.html');
 
     /* Включаем DevTools */
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     return mainWindow;
 }
 app.whenReady().then(() => {
     const mainWindow = createClapWindow()
 
-    globalShortcut.register(toggleShortcut, () => {
+    const { shortcut } = loadSettings();
+
+    globalShortcut.register(shortcut, () => {
         if (!mainWindow) return;
         if (mainWindow.isVisible()) {
             mainWindow.hide();
@@ -72,4 +78,15 @@ app.whenReady().then(() => {
 
 app.on('will-quit', () => {
     globalShortcut.unregisterAll();
+});
+
+ipcMain.handle('get-user-settings', () => {
+    return loadSettings();
+});
+
+// Добавляем обработчик для обновления горячей клавиши
+ipcMain.on('update-shortcut', (event, newShortcut) => {
+    const currentSettings = loadSettings();
+    const updatedSettings = { ...currentSettings, shortcut: newShortcut };
+    saveSettings(updatedSettings);
 });

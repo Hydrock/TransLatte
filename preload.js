@@ -2,8 +2,13 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer,
+    updateShortcut: (newShortcut) => {
+        return ipcRenderer.send('update-shortcut', newShortcut)
+    }
 });
 
-contextBridge.exposeInMainWorld('appHotkeys', {
-    toggleShortcut: process.platform === 'darwin' ? 'Cmd+Option+Shift+T' : 'Ctrl+Alt+Shift+T'
+ipcRenderer.invoke('get-user-settings').then((settings) => {
+    contextBridge.exposeInMainWorld('appHotkeys', {
+        toggleShortcut: settings.shortcut
+    });
 });

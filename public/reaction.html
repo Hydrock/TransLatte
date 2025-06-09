@@ -121,23 +121,28 @@
             color: #ff3b3b;
         }
 
-        #urlListContainer {
+        #scrollContainer {
             max-height: 200px;
             overflow-y: scroll;
             padding-right: 5px;
         }
 
-        #urlListContainer::-webkit-scrollbar {
+        #scrollContainer::-webkit-scrollbar {
             width: 6px;
         }
 
-        #urlListContainer::-webkit-scrollbar-thumb {
+        #scrollContainer::-webkit-scrollbar-thumb {
             background-color: #555;
             border-radius: 3px;
         }
 
-        #urlListContainer::-webkit-scrollbar-track {
+        #scrollContainer::-webkit-scrollbar-track {
             background-color: #222;
+        }
+
+        .hotkeysExamples {
+            font-size: 0.8rem;
+            color: gainsboro;
         }
     </style>
 </head>
@@ -158,10 +163,26 @@
             <input type="url" id="newUrl" placeholder="https://..." required />
             <button type="submit">Add</button>
         </form>
-        <div id="urlListContainer">
+        <div id="scrollContainer">
             <ul id="urlList"></ul>
         </div>
     </div>
+    <div id="hotkeySettings" style="display:none; padding: 10px;">
+        <div id="scrollContainer">
+            <h3>Настройки горячих клавиш</h3>
+            <p class="hotkeysExamples">
+                Examples (Строка без пробелов):<br><br>
+                Widows: <b>Ctrl+Shift+Alt+T</b> (Строка без пробелов)<br><br>
+                MaOs: <b>Cmd+Option+Shift+T</b> (Строка без пробелов)<br><br>
+            </p>
+            <form id="hotkeyForm">
+                <label for="hotkeyInput">Показать/скрыть окно:</label>
+                <input type="text" id="hotkeyInput" placeholder="Ctrl+Shift+Alt+T" />
+                <button type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             const hotkeyDisplay = document.getElementById('hotkey');
@@ -235,6 +256,10 @@
         const newUrl = document.getElementById('newUrl');
         const urlList = document.getElementById('urlList');
 
+        const hotkeySettings = document.getElementById('hotkeySettings');
+        const hotkeyForm = document.getElementById('hotkeyForm');
+        const hotkeyInput = document.getElementById('hotkeyInput');
+
         function loadProviders() {
             select.innerHTML = '';
             const providers = getProviders();
@@ -271,11 +296,13 @@
         settingsBtn.addEventListener('click', () => {
             const isVisible = settingsPanel.style.display === 'block';
             settingsPanel.style.display = isVisible ? 'none' : 'block';
+            hotkeySettings.style.display = isVisible ? 'none' : 'block';
             webview.style.visibility = isVisible ? 'visible' : 'hidden';
             menu.style.display = 'flex';
             if (!isVisible) {
                 loadProviders();
                 renderList();
+                hotkeyInput.value = window.appHotkeys?.toggleShortcut || '';
             }
         });
 
@@ -289,6 +316,15 @@
                 newUrl.value = '';
                 loadProviders();
                 renderList();
+            }
+        });
+
+        hotkeyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newHotkey = hotkeyInput.value.trim();
+            if (newHotkey) {
+                window.electronAPI?.updateShortcut?.(newHotkey); // Предполагаем, что такой метод есть
+                alert('Горячая клавиша обновлена. Перезапустите приложение, чтобы изменения вступили в силу.');
             }
         });
     </script>
