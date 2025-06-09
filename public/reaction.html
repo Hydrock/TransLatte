@@ -73,7 +73,9 @@
         }
 
         #addForm input[type="text"],
-        #addForm input[type="url"] {
+        #addForm input[type="url"],
+        #hotkeyForm input[type="text"],
+        #hotkeyForm input[type="url"] {
             padding: 6px 10px;
             border-radius: 4px;
             border: 1px solid #444;
@@ -82,7 +84,8 @@
             min-width: 200px;
         }
 
-        #addForm button {
+        #addForm button,
+        #hotkeyForm button {
             padding: 6px 12px;
             border-radius: 4px;
             background-color: #007acc;
@@ -91,7 +94,8 @@
             cursor: pointer;
         }
 
-        #addForm button:hover {
+        #addForm button:hover,
+        #hotkeyForm button:hover {
             background-color: #005fa3;
         }
 
@@ -122,7 +126,7 @@
         }
 
         #scrollContainer {
-            max-height: 200px;
+            max-height: 240px;
             overflow-y: scroll;
             padding-right: 5px;
         }
@@ -140,7 +144,7 @@
             background-color: #222;
         }
 
-        .hotkeysExamples {
+        .smallText {
             font-size: 0.8rem;
             color: gainsboro;
         }
@@ -158,27 +162,28 @@
     <webview id="frame" src="https://translate.yandex.com" allowpopups>
     </webview>
     <div id="settingsPanel" style="display:none; padding: 10px;">
+        <h3>List of resources</h3>
         <form id="addForm" style="margin-bottom: 10px;">
             <input type="text" id="newName" placeholder="Name" required />
             <input type="url" id="newUrl" placeholder="https://..." required />
             <button type="submit">Add</button>
         </form>
         <div id="scrollContainer">
-            <ul id="urlList"></ul>
+            <ul id="urlList" class="smallText"></ul>
         </div>
     </div>
     <div id="hotkeySettings" style="display:none; padding: 10px;">
         <div id="scrollContainer">
-            <h3>Настройки горячих клавиш</h3>
-            <p class="hotkeysExamples">
-                Examples (Строка без пробелов):<br><br>
-                Widows: <b>Ctrl+Shift+Alt+T</b> (Строка без пробелов)<br><br>
-                MaOs: <b>Cmd+Option+Shift+T</b> (Строка без пробелов)<br><br>
+            <h3>Keyboard Shortcut Settings</h3>
+            <p class="smallText">
+                Examples (A line without spaces):<br><br>
+                Widows: <b>Ctrl+Shift+Alt+T</b><br>
+                MaOs: <b>Cmd+Option+Shift+T</b><br><br>
             </p>
             <form id="hotkeyForm">
-                <label for="hotkeyInput">Показать/скрыть окно:</label>
+                <label for="hotkeyInput">Show/hide the window:</label>
                 <input type="text" id="hotkeyInput" placeholder="Ctrl+Shift+Alt+T" />
-                <button type="submit">Сохранить</button>
+                <button type="submit">Save</button>
             </form>
         </div>
     </div>
@@ -263,7 +268,6 @@
         function loadProviders() {
             select.innerHTML = '';
             const providers = getProviders();
-            console.log('providers:', providers);
             for (const { name, url } of providers) {
                 const option = document.createElement('option');
                 option.value = url;

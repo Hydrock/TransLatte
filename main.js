@@ -70,8 +70,29 @@ app.whenReady().then(() => {
         if (mainWindow.isVisible()) {
             mainWindow.hide();
         } else {
-            mainWindow.show();
-            mainWindow.focus();
+            if (is_mac) {
+                app.dock.hide();
+            }
+
+            /**
+             * Повторная инициализация настроек.
+             * На MacOS, по какой-то неведомой причине, спустя некоторое время работы приложения,
+             * оно перестает открываться поверх других приложений, а появляется и переключает пользователя на основной
+             * рабочий стол. Если открыть программу на весть экран и затем уменьшить - то все начинает снова работать.
+             * Ощущение такое, что происходит какая-то гонка за слоями отображения (я тут полный профан) и спустя время
+             * другие программы забирают право висеть на верхнем слое.
+             * Не уверен что это поможет, но все же.
+             */
+
+            mainWindow.setAlwaysOnTop(false);
+            mainWindow.setVisibleOnAllWorkspaces(false);
+
+            setTimeout(() => {
+                mainWindow.setAlwaysOnTop(true, "screen-saver");
+                mainWindow.setVisibleOnAllWorkspaces(true);
+                mainWindow.show();
+                mainWindow.focus();
+            }, 100);
         }
     });
 })
