@@ -56,7 +56,7 @@ function createClapWindow() {
     mainWindow.loadFile('public/reaction.html');
 
     /* Включаем DevTools */
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     return mainWindow;
 }
