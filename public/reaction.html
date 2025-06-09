@@ -327,8 +327,9 @@
             e.preventDefault();
             const newHotkey = hotkeyInput.value.trim();
             if (newHotkey) {
-                window.electronAPI?.updateShortcut?.(newHotkey); // Предполагаем, что такой метод есть
-                alert('Горячая клавиша обновлена. Перезапустите приложение, чтобы изменения вступили в силу.');
+                window.electronAPI?.updateShortcut?.(newHotkey)
+                alert('The hotkey has been updated. The application will be restarted.');
+                window.electronAPI?.restartApp();
             }
         });
     </script>

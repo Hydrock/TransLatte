@@ -4,7 +4,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer,
     updateShortcut: (newShortcut) => {
         return ipcRenderer.send('update-shortcut', newShortcut)
-    }
+    },
+    restartApp: () => ipcRenderer.send('restart-app')
 });
 
 ipcRenderer.invoke('get-user-settings').then((settings) => {

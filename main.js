@@ -111,3 +111,8 @@ ipcMain.on('update-shortcut', (event, newShortcut) => {
     const updatedSettings = { ...currentSettings, shortcut: newShortcut };
     saveSettings(updatedSettings);
 });
+
+ipcMain.on('restart-app', () => {
+    app.relaunch();
+    app.exit();
+});
