@@ -70,9 +70,7 @@ app.whenReady().then(() => {
         if (mainWindow.isVisible()) {
             mainWindow.hide();
         } else {
-            if (is_mac) {
-                app.dock.hide();
-            }
+
 
             /**
              * Повторная инициализация настроек.
@@ -83,16 +81,14 @@ app.whenReady().then(() => {
              * другие программы забирают право висеть на верхнем слое.
              * Не уверен что это поможет, но все же.
              */
+            // if (is_mac) {
+            //     app.dock.hide();
+            // }
+            mainWindow.setAlwaysOnTop(true, "screen-saver");
+            mainWindow.setVisibleOnAllWorkspaces(true);
 
-            mainWindow.setAlwaysOnTop(false);
-            mainWindow.setVisibleOnAllWorkspaces(false);
-
-            setTimeout(() => {
-                mainWindow.setAlwaysOnTop(true, "screen-saver");
-                mainWindow.setVisibleOnAllWorkspaces(true);
-                mainWindow.show();
-                mainWindow.focus();
-            }, 100);
+            mainWindow.show();
+            mainWindow.focus();
         }
     });
 })
